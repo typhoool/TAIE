@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Formularz</title>
+
+    <style>
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+
+            min-height:100%;
+            margin: 0;
+
+           
+        }
+
+        .container {
+
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            
+            border-radius: 8px;
+            
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px; 
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"] {
+
+            padding: 8px;
+            margin-bottom: 10px; 
+
+            border: 1px solid #ccc;
+            border-radius: 4px;
+
+            font-size: 16px;
+
+        }
+
+
+        button {
+            padding: 10px;
+
+            background-color: #4CAF50;
+            color: white;
+
+            border: none;
+            border-radius: 4px;
+
+            cursor: pointer;
+
+            font-size: 16px;
+            
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        button[type="reset"] {
+            background-color: #f44336;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group input {
+            width: 100%;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Formularz rejestracyjny</h2>
+
+        <form id="formularz">
+
+            <label for="imie">Imię:</label>
+            <input type="text" id="imie" name="imie" required>
+            <br>
+
+            <label for="nazwis">Nazwisko:</label>
+            <input type="text" id="nazwis" name="nazwis" required>
+            <br>
+
+            <label for="wiek">Wiek:</label>
+            <input type="number" id="wiek" name="wiek" required>
+            <br>
+
+            <label for="email">Adres e-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <br>
+
+            <label for="ulic">Ulica:</label>
+            <input type="text" id="ulic" name="ulic" required>
+            <br>
+
+            <label for="numerdom">Numer domu:</label>
+            <input type="text" id="numerdom" name="numerdom" required>
+            <br>
+
+            <label for="numermiesz">Numer mieszkania (opcjonalnie):</label>
+            <input type="text" id="numermiesz" name="numermiesz">
+            <br>
+
+            <label for="kodpoczt">Kod pocztowy:</label>
+            <input type="text" id="kodpoczt" name="kodpoczt" required>
+            <br>
+
+            <label for="miasto">Miasto:</label>
+            <input type="text" id="miasto" name="miasto" required>
+            <br><br>
+
+            <button type="button" onclick="validateForm()">Wyślij</button>
+            <button type="reset" onclick="clearResult()">Reset</button>
+
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function validateForm() {
+            let errors = [];
+            
+            const imie = document.getElementById('imie').value;
+            const imieRegex = /^[A-Z][a-z]*$/;
+            if (!imieRegex.test(imie)) {
+                errors.push("Imię musi zaczynać się wielką literą.");
+            }
+
+            const nazwis = document.getElementById('nazwis').value;
+            const nazwisRegex = /^[A-Z][a-z]*$/;
+            if (!nazwisRegex.test(nazwis)) {
+                errors.push("Nazwisko musi zaczynać się wielką literą.");
+            }
+
+            const wiek = document.getElementById('wiek').value;
+            if (isNaN(wiek) || wiek < 18) {
+                errors.push("Wiek musi być liczbą większą lub równą 18.");
+            }
+
+            const email = document.getElementById('email').value;
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.(com|pl|org)$/;
+            if (!emailRegex.test(email)) {
+                errors.push("Adres e-mail jest niepoprawny.");
+            }
+
+            const ulic = document.getElementById('ulic').value;
+            const ulicRegex = /^[A-Z][a-z]*$/;
+            if (!ulicRegex.test(ulic)) {
+                errors.push("Ulica musi zaczynać się wielką literą.");
+            }
+
+            const numerdom = document.getElementById('numerdom').value;
+            const numerdomRegex = /^[0-9]/;
+            if (!numerdomRegex.test(numerdom)) {
+                errors.push("Numer domu musi zaczynać się liczbą.");
+            }
+
+            const numermiesz = document.getElementById('numermiesz').value;
+            if (numermiesz && isNaN(numermiesz)) {
+                errors.push("Numer mieszkania, jeśli podany, musi być liczbą.");
+            }
+
+            const kodpoczt = document.getElementById('kodpoczt').value;
+            const kodpocztRegex = /^\d{2}-\d{3}$/;
+            if (!kodpocztRegex.test(kodpoczt)) {
+                errors.push("Kod pocztowy musi mieć format XX-XXX.");
+            }
+
+            const miasto = document.getElementById('miasto').value;
+            const miastoRegex = /^[A-Z][a-z]*$/;
+            if (!miastoRegex.test(miasto)) {
+                errors.push("Miasto musi zaczynać się wielką literą.");
+            }
+
+            const resultDiv = document.getElementById('result');
+            if (errors.length > 0) {
+                resultDiv.innerHTML = "<div class='error'>" + errors.join('<br>') + "</div>";
+            } else {
+                resultDiv.innerHTML = "<div>Formularz został pomyślnie wysłany!</div>";
+            }
+        }
+
+        function clearResult() {
+            document.getElementById('result').innerHTML = "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
