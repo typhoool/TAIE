@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Formularz</title>
+
+    <style>
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; 
+            min-height: 100%;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 15px; 
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        textarea {
+            padding: 8px;
+            margin-bottom: 10px; 
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        button[type="reset"] {
+            background-color: #f44336;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group input {
+            width: 100%;
+        }
+
+        select {
+            margin-bottom: 4px;
+            font-weight: bold;   
+            font-size: 16px;
+        }
+
+        .none {
+            display: none;
+        }
+
+        
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h2>Formularz kontaktowy</h2>
+
+        <form id="formularz">
+
+            <div class="form-group">
+                <label for="imie">Imię:</label>
+                <input type="text" id="imie" name="imie" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Adres e-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Temat">Temat wiadomości:</label>
+                <select id="Temat" name="Temat">
+                    <option value="" selected disabled>Wybierz temat</option>
+                    <option value="wsparcie">Wsparcie techniczne</option>
+                    <option value="opinia">Opinie</option>
+                </select>
+            </div>
+
+            <div id="wsparcie" class="none form-group">
+                <label for="problem">Opis problemu:</label>
+                <textarea id="problem" name="problem" rows="4"></textarea>
+            </div>
+
+            <div id="opinia" class="none form-group">
+                <label for="ocena">Ocena (1-5):</label>
+                <input type="number" id="ocena" name="ocena" min="1" max="5">
+            </div>
+
+            <button type="submit">Wyślij</button>
+            <button type="reset">Reset</button>
+        </form>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const tematSelect = document.getElementById('Temat');
+        const wsparcieDiv = document.getElementById('wsparcie');
+        const opiniaDiv = document.getElementById('opinia');
+        const form = document.getElementById('formularz');
+        const resultDiv = document.getElementById('result');
+
+        tematSelect.addEventListener('change', function() {
+            wsparcieDiv.classList.add('none');
+            opiniaDiv.classList.add('none');
+
+            if (this.value === 'wsparcie') {
+                wsparcieDiv.classList.remove('none');
+            } else if (this.value === 'opinia') {
+                opiniaDiv.classList.remove('none');
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            let errors = [];
+
+            const imie = document.getElementById('imie').value.trim();
+            if (!imie) {
+                errors.push("Imię jest wymagane.");
+            }
+
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!email) {
+                errors.push("Email jest wymagany.");
+            } else if (!emailRegex.test(email)) {
+                errors.push("Podaj poprawny adres email.");
+            }
+
+            const temat = tematSelect.value;
+            if (!temat) {
+                errors.push("Wybierz temat wiadomości.");
+            }
+
+            if (temat === 'wsparcie') {
+                const problem = document.getElementById('problem').value.trim();
+                if (!problem) {
+                    errors.push("Opis problemu jest wymagany.");
+                }
+            } else if (temat === 'opinia') {
+                const ocena = document.getElementById('ocena').value;
+                if (!ocena) {
+                    errors.push("Ocena jest wymagana.");
+                } else if (isNaN(ocena) || ocena < 1 || ocena > 5) {
+                    errors.push("Ocena musi być liczbą od 1 do 5.");
+                }
+            }
+
+            if (errors.length > 0) {
+                resultDiv.innerHTML = "<div class='error'>" + errors.join('<br>') + "</div>";
+            } else {
+                resultDiv.innerHTML = "<div>Formularz został pomyślnie wysłany!</div>";
+                form.reset();
+                wsparcieDiv.classList.add('none');
+                opiniaDiv.classList.add('none');
+            }
+        });
+
+        form.addEventListener('reset', function() {
+            resultDiv.innerHTML = "";
+            wsparcieDiv.classList.add('none');
+            opiniaDiv.classList.add('none');
+        });
+
+    </script>
+
+</body>
+
+</html>
