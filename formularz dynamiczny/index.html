@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dynamiczny Formularz</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .email-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .email-group input {
+            width: 90%;
+        }
+
+        .email-group button {
+            width: 8%;
+            padding: 8px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .email-group button:hover {
+            background-color: #d32f2f;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .nip-group {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Formularz kontaktowy</h2>
+        <form id="formularz">
+            <label for="imie">Imię:</label>
+            <input type="text" id="imie" name="imie" required>
+            
+            <label for="nazwis">Nazwisko:</label>
+            <input type="text" id="nazwis" name="nazwis" required>
+            
+            <label for="wiek">Wiek:</label>
+            <input type="number" id="wiek" name="wiek" required>
+            
+            <label for="typ">Typ:</label>
+            <select id="typ" name="typ">
+                <option value="osoba_fizyczna">Osoba fizyczna</option>
+                <option value="firma">Firma</option>
+            </select>
+            
+            <label for="email">Adres e-mail:</label>
+            <div id="emails">
+                <div class="email-group">
+                    <input type="email" name="email[]" required>
+                    <button type="button" onclick="removeEmail(this)">Usuń</button>
+                </div>
+            </div>
+            <button type="button" onclick="addEmail()">Dodaj adres e-mail</button>
+
+            <div id="nip-group" class="nip-group">
+                <label for="nip">NIP:</label>
+                <input type="text" id="nip" name="nip">
+            </div>
+            
+            <button type="button" onclick="saveData()">Zapisz</button>
+        </form>
+    </div>
+
+    <script>
+        function addEmail() {
+            const emailGroup = document.createElement('div');
+            emailGroup.classList.add('email-group');
+            emailGroup.innerHTML = `
+                <input type="email" name="email[]" required>
+                <button type="button" onclick="removeEmail(this)">Usuń</button>
+            `;
+            document.getElementById('emails').appendChild(emailGroup);
+        }
+
+        function removeEmail(button) {
+            button.parentElement.remove();
+        }
+
+        function saveData() {
+            const formData = new FormData(document.getElementById('formularz'));
+            
+            const data = {
+                imie: formData.get('imie'),
+                nazwis: formData.get('nazwis'),
+                wiek: formData.get('wiek'),
+                typ: formData.get('typ'),
+                email: formData.getAll('email[]'),
+                nip: formData.get('nip') || null
+            };
+
+            if (data.typ === 'firma' && !data.nip) {
+                alert("NIP jest wymagany dla firmy.");
+                return;
+            }
+
+            console.log(data); 
+        }
+
+        document.getElementById('typ').addEventListener('change', function() {
+            const nipGroup = document.getElementById('nip-group');
+            if (this.value === 'firma') {
+                nipGroup.style.display = 'block';
+            } else {
+                nipGroup.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>
