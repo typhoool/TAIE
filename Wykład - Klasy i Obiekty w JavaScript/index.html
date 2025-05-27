@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+
+<head>
+
+  <meta charset="UTF-8">
+  
+  <title>Document</title>
+
+</head>
+
+<body>
+
+  <h1>Informacje o samochodach</h1>
+  <div id="wynik"></div>
+
+  <script>
+
+    class Samochod {
+      constructor(marka, model, rok) {
+        this.marka = marka;
+        this.model = model;
+        this.rok = rok;
+      }
+
+      pokazInformacje() {
+        return `Samochód: ${this.marka} ${this.model}, Rok produkcji: ${this.rok}`;
+      }
+    }
+
+    const samochod1 = new Samochod("Toyota", "Corolla", 2015);
+    const samochod2 = new Samochod("BMW", "X5", 2020);
+    const samochod3 = new Samochod("Fiat", "Punto", 2010);
+
+    const wynikDiv = document.getElementById("wynik");
+
+    const samochody = [samochod1, samochod2, samochod3];
+
+    samochody.forEach(samochod => {
+      const paragraf = document.createElement("p");
+      paragraf.textContent = samochod.pokazInformacje();
+      wynikDiv.appendChild(paragraf);
+    });
+
+  </script>
+
+</body>
+</html>
